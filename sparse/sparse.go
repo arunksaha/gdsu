@@ -1,3 +1,11 @@
+// Package sparse provides a generic, map-backed implementation of the
+// Disjoint Set Union (DSU) data structure.
+//
+// The sparse DSU supports any user-defined type that is comparable,
+// grows dynamically with no fixed capacity, and assigns new elements
+// on demand through Find and Union operations. This makes it ideal for
+// graph algorithms or workloads where element identifiers are not known
+// ahead of time or cannot be restricted to integer ranges.
 package sparse
 
 import "github.com/arunksaha/gdsu"

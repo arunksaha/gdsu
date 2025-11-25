@@ -1,3 +1,11 @@
+// Package compact provides a high-performance, slice-backed implementation
+// of the Disjoint Set Union (DSU) data structure optimized for integer
+// identifiers.
+//
+// The compact DSU requires a fixed capacity at initialization and stores
+// parent and rank information in contiguous slices, making it suitable
+// for performance-critical workloads such as graph algorithms involving
+// nodes indexed 0..n-1 where memory locality and speed are important.
 package compact
 
 import "github.com/arunksaha/gdsu"
