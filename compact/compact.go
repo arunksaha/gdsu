@@ -7,8 +7,14 @@ import "github.com/arunksaha/gdsu"
 // It manages integers in the fixed range [0, n). It is compact and fast
 // but not sparse: you must choose the capacity at construction time.
 type DSU struct {
+	// parent[i] stores the parent of element i;
+	// if parent[i] == i, then i is the root of its set.
+	// The length of the slice is fixed at initialization.
 	parent []int
-	rank   []int
+
+	// rank[i] stores an upper bound on the height of the tree rooted at i.
+	// Used for union-by-rank to maintain small tree depth and high performance.
+	rank []int
 }
 
 // New creates a DSU for elements in the range [0, size).

@@ -7,13 +7,19 @@ import "github.com/arunksaha/gdsu"
 // It does NOT require a fixed capacity or pre-registration of elements.
 // Elements are added lazily when first seen by Find/Union.
 type DSU[T comparable] struct {
+	// parent stores the immediate parent of each element;
+	// if parent[x] == x, then x is the root of its set.
 	parent map[T]T
-	rank   map[T]int
+
+	// rank is a small integer used to keep the tree shallow;
+	// it approximates tree height and is used for union-by-rank,
+	// ensuring near-constant time operations.
+	rank map[T]int
 }
 
 // New creates a new DSU initialized with the given elements.
 // Additional elements may still be added later via Find/Union.
-func New[T comparable](elems []T) *DSU[T] {
+func New[T comparable](elems ...T) *DSU[T] {
 	dsu := &DSU[T]{
 		parent: make(map[T]T, len(elems)),
 		rank:   make(map[T]int, len(elems)),
@@ -23,14 +29,6 @@ func New[T comparable](elems []T) *DSU[T] {
 		dsu.rank[e] = 0
 	}
 	return dsu
-}
-
-// ensure makes sure x exists in the DSU.
-func (dsu *DSU[T]) ensure(x T) {
-	if _, ok := dsu.parent[x]; !ok {
-		dsu.parent[x] = x
-		dsu.rank[x] = 0
-	}
 }
 
 // Find returns the representative element (root) of the set containing x.
