@@ -116,6 +116,36 @@ func TestSparseDeepChainPathCompression(t *testing.T) {
 	}
 }
 
+// TestSparseUnionRankSwapSparse verifies that union-by-rank correctly attaches
+// the lower-rank tree under the higher-rank tree in the sparse DSU.
+func TestSparseUnionRankSwapSparse(t *testing.T) {
+	d := New("a", "b", "c")
+
+	// Create: a <- b (rank[a] = 1)
+	d.Union("a", "b")
+
+	// Without interfering with a or b, union c under b so that:
+	// Find(b) == 'a' and rank[a] > rank[c]
+	rootC := d.Find("c")
+	if rootC != "c" {
+		t.Fatalf("expected c to be its own root, got %v", rootC)
+	}
+
+	// Now union c with a (rank[a] = 1, rank[c] = 0),
+	// so c should attach under a, NOT the other way around.
+	d.Union("c", "a")
+
+	// Check representatives
+	if !d.Connected("b", "c") {
+		t.Fatalf("expected b and c to be connected after union-by-rank")
+	}
+
+	root := d.Find("c")
+	if root != "a" {
+		t.Fatalf("expected a to remain the root due to higher rank, got %v", root)
+	}
+}
+
 // TestSparseImplementsInterface tests interface compliance.
 func TestSparseImplementsInterface(t *testing.T) {
 	// Compile-time interface conformance check.

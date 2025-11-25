@@ -36,7 +36,7 @@ func New(size int) *DSU {
 
 // boundsCheck ensures x is within [0, len(parent)).
 func (dsu *DSU) boundsCheck(x int) bool {
-	return x >= 0 && x < len(dsu.parent)
+	return 0 <= x && x < len(dsu.parent)
 }
 
 // Find returns the representative element (root) of the set containing x.

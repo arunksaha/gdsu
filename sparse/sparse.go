@@ -11,9 +11,8 @@ type DSU[T comparable] struct {
 	// if parent[x] == x, then x is the root of its set.
 	parent map[T]T
 
-	// rank is a small integer used to keep the tree shallow;
-	// it approximates tree height and is used for union-by-rank,
-	// ensuring near-constant time operations.
+	// rank stores an upper bound on the height of the tree rooted at each element.
+	// Used with union-by-rank to keep trees shallow and operations near O(1).
 	rank map[T]int
 }
 
