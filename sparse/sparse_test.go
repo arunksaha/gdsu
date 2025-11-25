@@ -6,6 +6,13 @@ import (
 	"github.com/arunksaha/gdsu"
 )
 
+// TestSparseImplementsInterface tests interface compliance.
+func TestSparseImplementsInterface(t *testing.T) {
+	// Compile-time interface conformance check.
+	var _ gdsu.DSU[int] = (*DSU[int])(nil)
+	var _ gdsu.DSU[string] = (*DSU[string])(nil)
+}
+
 // TestSparseBasicInt tests basic functionality using int elements.
 func TestSparseBasicInt(t *testing.T) {
 	dsu := New(1, 2, 3, 4, 5)
@@ -144,11 +151,4 @@ func TestSparseUnionRankSwapSparse(t *testing.T) {
 	if root != "a" {
 		t.Fatalf("expected a to remain the root due to higher rank, got %v", root)
 	}
-}
-
-// TestSparseImplementsInterface tests interface compliance.
-func TestSparseImplementsInterface(t *testing.T) {
-	// Compile-time interface conformance check.
-	var _ gdsu.DSU[int] = (*DSU[int])(nil)
-	var _ gdsu.DSU[string] = (*DSU[string])(nil)
 }

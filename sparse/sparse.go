@@ -74,6 +74,7 @@ func (dsu *DSU[T]) Union(x, y T) bool {
 }
 
 // Connected reports whether x and y are in the same set.
+// If x or y did not already exist, then singleton sets are created for them.
 func (dsu *DSU[T]) Connected(x, y T) bool {
 	return dsu.Find(x) == dsu.Find(y)
 }
