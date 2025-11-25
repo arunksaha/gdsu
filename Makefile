@@ -1,6 +1,10 @@
 # Makefile for gdsu
 
-.PHONY: all vet staticcheck tidy test fmt lint ci
+.PHONY: all vet staticcheck tidy test fmt lint ci coverage covhtml bench doc clean install
+
+install:
+	go install honnef.co/go/tools/cmd/staticcheck@2025.1.1
+	go install golang.org/x/tools/cmd/godoc@latest
 
 # Run everything (safe defaults)
 all: fmt vet staticcheck test
@@ -13,8 +17,8 @@ fmt:
 vet:
 	go vet ./...
 
-# Run staticcheck (must be installed with: go install honnef.co/go/tools/cmd/staticcheck@latest)
-staticcheck:
+# Run static analysis
+staticcheck: install
 	staticcheck ./...
 
 # Run unit tests
@@ -36,10 +40,14 @@ coverage:
 
 covhtml: coverage
 	go tool cover -html=coverage.out -o coverage.html
-	open coverage.html
+	@printf "View file://${PWD}/coverage.html#file0 \n"
 
 bench:
 	go test -bench=. ./...
+
+doc: install
+	@printf "View http://localhost:6060/pkg/github.com/arunksaha/gdsu/, CTRL-C when done\n"
+	godoc -http=:6060
 
 clean:
 	rm -f coverage.out
