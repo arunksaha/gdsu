@@ -165,14 +165,16 @@ func ExampleDSU_Groups() {
 	for _, elements := range groups {
 		// Elements in a line needs a predictable order for testing
 		sort.Strings(elements)
+		separator := ""
 		for _, element := range elements {
-			fmt.Printf(" %s", element)
+			fmt.Printf("%s%s", separator, element)
+			separator = ","
 		}
 		fmt.Printf("\n")
 	}
 
 	// Unordered output:
-	//  bach barman beethoven mozart
-	//  euler fermat gauss ramanujan
-	//  bose einstein gallileo newton
+	// bach,barman,beethoven,mozart
+	// euler,fermat,gauss,ramanujan
+	// bose,einstein,gallileo,newton
 }
