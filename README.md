@@ -1,151 +1,202 @@
 # gdsu — Generic Disjoint Set Union (Union-Find)
 
-`gdsu` is a modern, ergonomic, and extensible **Disjoint Set Union (DSU)** / **Union-Find** library for Go.
+`gdsu` is a modern, type-safe, composable Disjoint Set Union (DSU) / Union-Find Go library.  
+It provides a clean DSU interface with two interchangeable implementations:
 
-It provides:
+- **Sparse DSU** — generic, map-backed, supports any comparable type, grows dynamically  
+- **Compact DSU** — high-performance integer-indexed version using slices, fixed capacity  
 
-- A clean **interface-based abstraction** for DSU operations  
-- A **sparse**, **generic**, **map-backed** implementation (unbounded capacity)  
-  - Support for any `comparable` type
-- A **compact**, integer-indexed, slice-backed implementation (fixed capacity)  
-  - High-performance compact mode for integer-indexed workloads  
-
-This makes `gdsu` suitable for:
-- Graph algorithms  
-- Connectivity problems  
-- Clustering  
-- Dynamic merging/partitioning tasks  
-- Use with arbitrary user-defined types  
+This library is designed for algorithmic workloads, data pipelines, graph theory, clustering, and any use-case involving connectivity queries.
 
 ---
 
-# 1. DSU Interface
+## 1. DSU Interface
 
-Located in: `gdsu/gdsu.go`
-
-The interface defines the core DSU behavior:
+Located in: `gdsu.go`
 
 ```go
 type DSU[T comparable] interface {
-    Find(x T) T
-    Union(x, y T) bool
-    Connected(x, y T) bool
-    Groups() map[T][]T
+    Find(x T) T            // Find returns the representative element (root) of x
+    Union(x, y T) bool     // Union merges the sets containing x and y
+    Connected(x, y T) bool // Connected reports whether x and y are in the same set
+    Groups() map[T][]T     // Groups returns all connected components
 }
 ```
 
-Both implementations, sparse and compact, satisfy this interface.
+Both implementations — sparse and compact — satisfy this interface.
 
 ---
 
-# 2. Sparse DSU (Generic, Map-Based, Unbounded)
+## 2. Sparse DSU (Generic, Map-Based, Dynamic)
 
 Located in: `sparse/sparse.go`
 
-### ✨ Features
-- Generic over any `comparable` type  
-- Grows dynamically — **no fixed initial size**  
-- Backed by Go maps (`map[T]T`)  
+### Key Features
+- Works with **any comparable type**: strings, integers, structs, user-defined keys  
+- Supports dynamic growth — **no fixed initial capacity**
+- Backed by Go maps (`map[T]T`)
 - Ideal for:
-  - Dynamic workloads  
-  - Arbitrary user-defined element types  
-  - Situations where IDs are not known upfront  
+  - Arbitrary keys  
+  - Sparse connectivity  
+  - Unpredictable element ranges  
+  - Rapid prototyping with rich data types  
 
 ### Example
 
 ```go
-import "github.com/arunksaha/gdsu/sparse"
+package main
 
-dsu := sparse.New[string]()
+import (
+    "fmt"
+    "github.com/arunksaha/gdsu/sparse"
+)
 
-dsu.Union("apple", "banana")
-dsu.Union("carrot", "banana")
+func main() {
+    dsu := sparse.New[string]()
 
-fmt.Println(dsu.Connected("apple", "carrot")) // true
-fmt.Println(dsu.Groups())
-// map[banana:[apple banana carrot]]
+    dsu.Union("apple", "banana")
+    dsu.Union("banana", "cherry")
+
+    fmt.Println(dsu.Connected("apple", "cherry")) // true
+    fmt.Println(len(dsu.Groups()))                // 1
+}
 ```
 
 ---
 
-# 3. Compact DSU (Int-Indexed, Slice-Backed)
+## 3. Compact DSU (Int-Indexed, Slice-Backed)
 
 Located in: `compact/compact.go`
 
-### ✨ Features
-- High-performance, low-overhead  
-- Slice-based parent and rank arrays  
-- Requires a fixed capacity specified at initialization  
+### Key Features
+- Very fast, minimal overhead  
+- Uses contiguous slices for parent and rank  
+- Requires fixed capacity at initialization (`New(size)`)
 - Ideal for:
-  - Graph algorithms with node IDs `0..N-1`  
-  - Tight loops  
+  - Graph algorithms  
+  - Tight inner loops  
+  - Integer node IDs (`0..N-1`)  
   - Performance-critical workloads  
 
 ### Example
 
 ```go
-import "github.com/arunksaha/gdsu/compact"
+package main
 
-dsu := compact.New(10) // supports elements 0..9
+import (
+    "fmt"
+    "github.com/arunksaha/gdsu/compact"
+)
 
-dsu.Union(1, 2)
-dsu.Union(2, 3)
+func main() {
+    dsu := compact.New(10) // supports 0..9
 
-fmt.Println(dsu.Connected(1, 3)) // true
-fmt.Println(dsu.Groups())
-// map[1:[1 2 3]]
+    dsu.Union(1, 2)
+    dsu.Union(2, 3)
+
+    fmt.Println(dsu.Connected(1, 3)) // true
+    fmt.Println(dsu.Groups())
+}
 ```
 
 ---
 
-# 4. Unique offerings of gdsu
+## 4. Benchmark Overview
 
-Often Union-Find packages
-- Support **only integers**  
-- Require **fixed capacity** at initialization  
-- Do not support **generic types**  
-- Do not provide an interface abstraction  
+Benchmark files:
+- `sparse/sparse_benchmark_test.go`
+- `compact/compact_benchmark_test.go`
+- `comparison/comparison_benchmark_test.go`
 
-`gdsu` provides:
+Benchmarks include:
+- Union performance  
+- Find performance  
+- Connected queries  
+- Mixed-operation simulations  
+- Sparse vs compact comparison  
+- Memory profiling  
 
-### ✔ Generic sparse DSU  
-Supports **any comparable type** and grows dynamically.
+Compact is optimized for pure speed; sparse is optimized for flexibility.
+
+---
+
+## 5. Package Structure
+
+```
+.
+├── compact
+│   ├── compact_benchmark_test.go
+│   ├── compact_example_test.go
+│   ├── compact.go
+│   └── compact_test.go
+├── comparison
+│   └── comparison_benchmark_test.go
+├── gdsu.go
+├── gdsu_test.go
+├── go.mod
+├── LICENSE
+├── Makefile
+├── README.md
+└── sparse
+    ├── sparse_benchmark_test.go
+    ├── sparse_example_test.go
+    ├── sparse.go
+    └── sparse_test.go
+```
+
+---
+
+## 6. Unique aspects of gdsu
+
+Often (Go) DSU implementations:
+
+- Work only with `int`
+- Require fixed capacity specified at construction
+- Do not support generic types 
+- Do not provide an interface abstraction
+
+`gdsu` improves on all of these:
 
 ### ✔ Unified interface  
 Both implementations satisfy the same `DSU[T]` interface.
 
-### ✔ Two optimized backends  
-- **Sparse**: flexible, dynamic, generic  
-- **Compact**: fast, contiguous memory, ideal for high performance workloads  
+### ✓ Generic sparse DSU  
+Supports any comparable type, grows dynamically.
 
-### ✔ Clean package layout  
-- `gdsu/` — interface  
-- `sparse/` — generic dynamic implementation  
-- `compact/` — integer-slice fixed-capacity implementation  
+### ✓ High-performance compact DSU  
+Optimized for numeric workloads.
 
 ---
 
-# 5. Project Structure
+## 7. Installation
 
-```
-gdsu/
-  gdsu.go
-sparse/
-  sparse.go
-  sparse_test.go
-compact/
-  compact.go
-  compact_test.go
+```sh
+go get github.com/arunksaha/gdsu
 ```
 
 ---
 
-# 6. License
+## 8. Getting Started
 
-MIT License — see `LICENSE`.
+Choose sparse or compact depending on your needs.  
+Example usage is provided in each subpackage’s `*_example_test.go`.
+
+The `Makefile` provides several convenience targets, namely:
+
+  - `lint` to run various formatting and static analysis tools, e.g., `fmt`, `vet`, `staticcheck`, `tidy`
+
+  - `test` to run unit tests
+
+  - `coverage` to test coverage
+
+  - `covhtml` to view test coverage results in pretty color-coded html
+
+  - `doc` to generate documentation for local viewing
+
+  - `benchmark` to run all the benchmark tests
 
 ---
 
-# 7. Contributions
+## 9. Contributions
 
-PRs and issues welcome!
+Issues and PRs are welcome!
