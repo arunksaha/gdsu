@@ -49,6 +49,9 @@ doc: install
 	@printf "View http://localhost:6060/pkg/github.com/arunksaha/gdsu/, CTRL-C when done\n"
 	godoc -http=:6060
 
+benchmark:
+	go test -bench=. -benchmem  ./...
+
 clean:
 	rm -f coverage.out
 	rm -f coverage.html
