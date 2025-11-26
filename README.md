@@ -1,7 +1,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/arunksaha/gdsu.svg)](https://pkg.go.dev/github.com/arunksaha/gdsu)
 [![Go Report Card](https://goreportcard.com/badge/github.com/arunksaha/gdsu)](https://goreportcard.com/report/github.com/arunksaha/gdsu)
 ![Build](https://github.com/arunksaha/gdsu/actions/workflows/ci.yml/badge.svg)
-
+[![codecov](https://codecov.io/github/arunksaha/gdsu/graph/badge.svg?token=134TP2MY41)](https://codecov.io/github/arunksaha/gdsu)
 
 
 # gdsu — Generic Disjoint Set Union (Union-Find)
@@ -163,13 +163,13 @@ Often (Go) DSU implementations:
 
 `gdsu` improves on all of these:
 
-### ✔ Unified interface  
+### Unified interface
 Both implementations satisfy the same `DSU[T]` interface.
 
-### ✓ Generic sparse DSU  
+### Generic sparse DSU
 Supports any comparable type, grows dynamically.
 
-### ✓ High-performance compact DSU  
+### High-performance compact DSU
 Optimized for numeric workloads.
 
 ---
