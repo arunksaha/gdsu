@@ -163,13 +163,13 @@ Often (Go) DSU implementations:
 
 `gdsu` improves on all of these:
 
-### ✔ Unified interface  
+### Unified interface
 Both implementations satisfy the same `DSU[T]` interface.
 
-### ✓ Generic sparse DSU  
+### Generic sparse DSU
 Supports any comparable type, grows dynamically.
 
-### ✓ High-performance compact DSU  
+### High-performance compact DSU
 Optimized for numeric workloads.
 
 ---
