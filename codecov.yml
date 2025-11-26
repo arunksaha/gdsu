@@ -1,0 +1,16 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 75%
+        base: auto
+    patch:
+      default:
+        target: auto
+        threshold: 75%
+        base: auto
+
+codecov:
+  require_ci_to_pass: false
+  disable_default_path_fixes: true
