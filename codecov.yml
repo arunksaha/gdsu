@@ -3,14 +3,14 @@ coverage:
     project:
       default:
         target: auto
-        threshold: 75%
+        threshold: 90%
         base: auto
     patch:
       default:
         target: auto
-        threshold: 75%
+        threshold: 90%
         base: auto
 
 codecov:
-  require_ci_to_pass: false
+  require_ci_to_pass: true
   disable_default_path_fixes: true
