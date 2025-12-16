@@ -12,6 +12,7 @@ package gdsu
 //   - Find:      return the canonical representative (root) of x's set.
 //   - Union:     merge sets containing x and y, return true if they were separate.
 //   - Connected: report whether x and y belong to the same set.
+//   - IsMember:  report whether x has been registered with the DSU.
 //   - Groups:    return all current sets as root -> slice of elements.
 type DSU[T comparable] interface {
 	// Find returns the representative (root) of the set containing x.
@@ -22,6 +23,9 @@ type DSU[T comparable] interface {
 
 	// Connected returns true iff x and y belong to the same set.
 	Connected(x, y T) bool
+
+	// IsMember reports whether x is present in the DSU without mutating the DSU.
+	IsMember(x T) bool
 
 	// Groups returns a mapping of each root to all elements in its set.
 	Groups() map[T][]T

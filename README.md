@@ -25,6 +25,7 @@ type DSU[T comparable] interface {
     Find(x T) T            // Find returns the representative element (root) of x
     Union(x, y T) bool     // Union merges the sets containing x and y
     Connected(x, y T) bool // Connected reports whether x and y are in the same set
+    IsMember(x T) bool     // IsMember reports whether x is present (no mutation)
     Groups() map[T][]T     // Groups returns all connected components
 }
 ```

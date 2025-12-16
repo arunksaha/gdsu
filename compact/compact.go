@@ -100,6 +100,11 @@ func (dsu *DSU) Connected(x, y int) bool {
 	return dsu.Find(x) == dsu.Find(y)
 }
 
+// IsMember reports whether x is within the managed range [0, n).
+func (dsu *DSU) IsMember(x int) bool {
+	return dsu.boundsCheck(x)
+}
+
 // Groups returns a map from root -> slice of elements in that set.
 func (dsu *DSU) Groups() map[int][]int {
 	groups := make(map[int][]int)

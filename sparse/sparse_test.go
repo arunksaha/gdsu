@@ -66,6 +66,22 @@ func TestSparseFindCreatesNew(t *testing.T) {
 	}
 }
 
+func TestSparseIsMember(t *testing.T) {
+	dsu := New[int](1, 2)
+
+	if !dsu.IsMember(1) || !dsu.IsMember(2) {
+		t.Fatalf("expected initial elements to be members")
+	}
+	if dsu.IsMember(3) {
+		t.Fatalf("expected unseen element to report not a member")
+	}
+	// Calling IsMember on an unseen element must not mutate the DSU.
+	groups := dsu.Groups()
+	if len(groups) != 2 {
+		t.Fatalf("expected 2 singleton groups, got %d", len(groups))
+	}
+}
+
 // TestSparseUnionOnNewElements ensures Union() works even if elements were never added before.
 func TestSparseUnionOnNewElements(t *testing.T) {
 	dsu := New[int]()

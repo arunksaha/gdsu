@@ -40,6 +40,16 @@ func TestCompactGroups(t *testing.T) {
 	}
 }
 
+func TestCompactIsMember(t *testing.T) {
+	dsu := New(3)
+	if !dsu.IsMember(0) || !dsu.IsMember(2) {
+		t.Fatalf("expected in-range elements to be members")
+	}
+	if dsu.IsMember(-1) || dsu.IsMember(3) {
+		t.Fatalf("expected out-of-range elements to report not a member")
+	}
+}
+
 // TestNewNegativeSize ensures New() dos not panic when called with a negative size.
 func TestCompactNewNegativeSize(t *testing.T) {
 	_ = New(-5)
