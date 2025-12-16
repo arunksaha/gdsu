@@ -87,6 +87,12 @@ func (dsu *DSU[T]) Connected(x, y T) bool {
 	return dsu.Find(x) == dsu.Find(y)
 }
 
+// IsMember reports whether x has been seen by the DSU without adding it.
+func (dsu *DSU[T]) IsMember(x T) bool {
+	_, exists := dsu.parent[x]
+	return exists
+}
+
 // Groups returns a map from root -> slice of elements in that set.
 func (dsu *DSU[T]) Groups() map[T][]T {
 	groups := make(map[T][]T)
